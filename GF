@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <script>
+    const produits = <?!= JSON.stringify(produits) ?>;
+    const contrats = <?!= JSON.stringify(contrats) ?>;
+    console.log("Produits reçus :", produits);
+    console.log("Contrats reçus :", contrats);
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+    .container { display: flex; border: 2px solid #1e3a5f; border-radius: 12px; overflow: hidden; background: white; max-width: 1600px; margin: auto; }
+    .produits, .ticket { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .produits { border-right: 1px solid #ccc; }
+    .produits h2, .ticket h2 { margin-top: 0; }
+    .produit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .produit-btn { background-color: #e0f2f1; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; }
+    .produit-btn:hover { background-color: #b2dfdb; }
+    .img-produit { width: 110px; height: 110px; border-radius: 6px; object-fit: cover; margin-bottom: 8px; }
+    .quantite-btns { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+    .quantite-btn { font-size: 14px; padding: 4px 8px; border: none; border-radius: 4px; background-color: #c8e6c9; cursor: pointer; }
+    .quantite-btn:hover { background-color: #a5d6a7; }
+    .ticket-content { background: #f0f0f0; border-radius: 10px; padding: 10px; min-height: 150px; }
+    .ticket-line { display: flex; justify-content: space-between; margin: 5px 0; }
+    .total-final { font-size: 24px; font-weight: bold; margin-top: 10px; color: #2e7d32; }
+    .actions { margin-top: 20px; }
+    .btn { padding: 12px 18px; border: none; border-radius: 6px; font-size: 16px; margin-right: 10px; cursor: pointer; }
+    .btn-clear { background-color: #e57373; color: white; }
+    .logo-container-right { text-align: right; margin-top: 20px; }
+    .logo-container-right img { max-width: 150px; height: auto; }
+
+    .contrat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+      align-items: center;
+      justify-items: center;
+      max-width: 100%;
+    }
+
+    .contrat-btn {
+      padding: 6px;
+      font-size: clamp(10px, 1.2vw, 14px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #e0f2f1;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 140px;
+      box-sizing: border-box;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .contrat-btn .img-produit {
+      width: auto;
+      height: 100%;
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .img-wrapper {
+      width: 100px;
+      height: 100px;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 4px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    /* ✅ Modale personnalisée */
+    #modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    #modal .box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    #modal .box h3 {
+      margin-top: 0;
+    }
+
+    #modal .box button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: none;
+      background-color: #1976d2;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="produits">
+    <h2>Produits</h2>
+    <div class="produit-grid" id="produit-grid"></div>
+  </div>
+
+  <div class="ticket">
+    <h2>Ticket en cours</h2>
+    <div class="ticket-content" id="ticket-content"></div>
+    <div class="ticket-line"><strong>Total brut :</strong> <span id="total-brut">0,00 $</span></div>
+    <div class="ticket-line"><strong>Remise :</strong> <span id="remise-appliquee">0 % (-0,00 $)</span></div>
+    <div class="ticket-line total-final"><span>Total final :</span><span id="total">0,00 $</span></div>
+
+    <h3>Réduction</h3>
+    <div class="quantite-btns" style="margin-bottom: 10px;">
+      <button class="quantite-btn" onclick="appliquerRemise(5)">-5%</button>
+      <button class="quantite-btn" onclick="appliquerRemise(10)">-10%</button>
+      <button class="quantite-btn" onclick="appliquerRemise(15)">-15%</button>
+      <button class="quantite-btn" onclick="appliquerRemise(20)">-20%</button>
+      <button class="quantite-btn" style="background-color: #ffcdd2;" onclick="annulerRemise()">Annuler remise</button>
+    </div>
+
+    <h3>Contrats</h3>
+    <div class="contrat-grid" id="contrat-grid"></div>
+
+    <div class="actions">
+      <button class="btn btn-clear" onclick="viderTicket()">🗑️ Vider Ticket</button>
+    </div>
+
+    <div class="logo-container-right">
+      <img src="https://i.ibb.co/mjSwdxz/rexdiner-removebg-preview.png" alt="Rex Diner Logo">
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Modale personnalisée -->
+<div id="modal">
+  <div class="box">
+    <h3>📝 Info contrat</h3>
+    <div id="modal-content"></div>
+    <button onclick="fermerModal()">Fermer</button>
+  </div>
+</div>
+
+<script>
+  const ticket = [];
+  let remise = 0;
+
+  function ajouterProduit(nom, prix, quantiteAjoutee = 1) {
+    const produit = ticket.find(p => p.nom === nom);
+    if (produit) {
+      produit.quantite += quantiteAjoutee;
+    } else {
+      ticket.push({ nom, prix, quantite: quantiteAjoutee });
+    }
+    afficherTicket();
+  }
+
+  function afficherTicket() {
+    const container = document.getElementById('ticket-content');
+    const totalEl = document.getElementById('total');
+    const totalBrutEl = document.getElementById('total-brut');
+    const remiseEl = document.getElementById('remise-appliquee');
+    container.innerHTML = '';
+    let totalBrut = 0;
+
+    ticket.forEach(produit => {
+      const ligne = document.createElement('div');
+      ligne.className = 'ticket-line';
+      ligne.innerHTML = `
+        <span>${produit.nom} x${produit.quantite}</span>
+        <span>${(produit.prix * produit.quantite).toFixed(2)} $</span>
+      `;
+      container.appendChild(ligne);
+      totalBrut += produit.prix * produit.quantite;
+    });
+
+    const montantRemise = totalBrut * (remise / 100);
+    const totalFinal = totalBrut - montantRemise;
+
+    totalBrutEl.textContent = totalBrut.toFixed(2) + ' $';
+    remiseEl.textContent = `${remise} % (-${montantRemise.toFixed(2)} $)`;
+    totalEl.textContent = totalFinal.toFixed(2) + ' $';
+  }
+
+  function appliquerRemise(pourcentage) {
+    remise = pourcentage;
+    afficherTicket();
+  }
+
+  function annulerRemise() {
+    remise = 0;
+    afficherTicket();
+  }
+
+  function viderTicket() {
+    ticket.length = 0;
+    remise = 0;
+    afficherTicket();
+  }
+
+  function ouvrirModal(message) {
+    document.getElementById('modal-content').textContent = message;
+    document.getElementById('modal').style.display = 'flex';
+  }
+
+  function fermerModal() {
+    document.getElementById('modal').style.display = 'none';
+  }
+
+  window.onload = () => {
+    const grid = document.getElementById('produit-grid');
+    const contratGrid = document.getElementById('contrat-grid');
+
+    produits.forEach(({ nom, prix, image }) => {
+      const div = document.createElement('div');
+      div.className = 'produit-btn';
+      div.innerHTML = `
+        ${image ? `<img src="${image}" class="img-produit" alt="${nom}">` : `<div style="font-weight:bold; margin-bottom:8px;">${nom}</div>`}
+        <div class="quantite-btns">
+          <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 1)">+1</button>
+          <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 5)">+5</button>
+          <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 10)">+10</button>
+        </div>
+      `;
+      grid.appendChild(div);
+    });
+
+    contrats.forEach(({ nom, remise, image, observation }) => {
+      const btn = document.createElement('div');
+      btn.className = 'produit-btn contrat-btn';
+      btn.onclick = () => {
+        appliquerRemise(Number(remise * 100));
+        if (observation) ouvrirModal(observation);
+      };
+      btn.innerHTML = `
+        <div class="img-wrapper">
+          ${image ? `<img src="${image}" class="img-produit" alt="${nom}">` : `${nom}`}
+        </div>
+        <div>-${remise * 100}%</div>
+      `;
+      contratGrid.appendChild(btn);
+    });
+  };
+</script>
+
+</body>
+</html>
