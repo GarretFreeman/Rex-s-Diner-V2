@@ -1,54 +1,55 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Rex Diner - Accueil</title>
+  <meta charset="UTF-8">
+  <title>Accueil - Rex Diner</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background-image: url('https://i.ibb.co/7xPxjKtC/garret-removebg-preview.png'); /* Remplace par ton image */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       height: 100vh;
     }
 
     .container {
       display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       gap: 40px;
+      flex-wrap: wrap;
     }
 
     .card {
       width: 300px;
       height: 300px;
-      background: white;
+      background-color: rgba(255, 255, 255, 0.85);
       border-radius: 16px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       text-align: center;
+      padding: 20px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .card:hover {
       transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     }
 
     .card img {
-      width: 120px;
-      height: 120px;
+      width: 100px;
+      height: 100px;
       object-fit: contain;
       margin-bottom: 20px;
     }
 
-    .card span {
-      font-size: 18px;
-      font-weight: bold;
+    .card h2 {
+      font-size: 20px;
       color: #333;
     }
   </style>
@@ -56,12 +57,12 @@
 <body>
   <div class="container">
     <div class="card" onclick="window.location.href='caisse.html'">
-      <img src="https://i.ibb.co/rKT93TPc/pack-kooron-cx901-23711611.jpg" alt="Caisse" />
-      <span>Accéder à la caisse</span>
+      <img src="images/caisse.png" alt="Caisse">
+      <h2>Accéder à la caisse</h2>
     </div>
     <div class="card" onclick="window.location.href='resume.html'">
-      <img src="https://i.ibb.co/Z6tx3GtL/statistiques.jpg" alt="Résumé" />
-      <span>Résumé d'activité</span>
+      <img src="images/stat.png" alt="Statistiques">
+      <h2>Voir les statistiques</h2>
     </div>
   </div>
 </body>
