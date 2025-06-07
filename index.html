@@ -92,6 +92,16 @@
       margin-top: 10px;
     }
 
+    #total-final {
+      color: orange;
+      font-size: 28px;
+      font-weight: bold;
+      display: block;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+
     .remise-btns {
       display: flex;
       justify-content: center;
@@ -175,7 +185,11 @@
     <div id="ticket-content" class="ticket-content"></div>
     <div class="total"><span>Total brut :</span> <span id="total-brut">0,00 $</span></div>
     <div class="total"><span>Remise :</span> <span id="remise-appliquee">0 % (-0,00 $)</span></div>
-    <div class="total"><span>Total final :</span> <span id="total-final">0,00 $</span></div>
+    <div class="total" style="text-align:center;">
+      <span>Total final :</span>
+      <span id="total-final">0,00 $</span>
+    </div>
+
 
     <h3>Réductions rapides</h3>
     <div class="remise-btns">
