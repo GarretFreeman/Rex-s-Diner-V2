@@ -124,6 +124,42 @@
     .remise-btns button:last-child:hover {
       background-color: #d32f2f;
     }
+
+    /* Modal popup personnalisé */
+    #popup-observation {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #popup-observation .popup-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    #popup-observation button {
+      margin-top: 10px;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+    }
+
+    #popup-observation button:hover {
+      background-color: #111;
+    }
   </style>
 </head>
 <body>
@@ -152,6 +188,14 @@
 
     <h3>Contrats</h3>
     <div id="contrat-grid" class="contrat-grid"></div>
+  </div>
+</div>
+
+<!-- MODAL HTML -->
+<div id="popup-observation">
+  <div class="popup-box">
+    <p id="popup-message"></p>
+    <button onclick="fermerPopup()">Fermer</button>
   </div>
 </div>
 
@@ -204,8 +248,16 @@
     afficherTicket();
   }
 
-  // Appel à l’API Google Apps Script
-  fetch("https://script.google.com/macros/s/AKfycbzhVC_g7qxPYGPVgSvwyCrR3r9xOrI3mBl7iq15JzOAczMLq0gaEGF1Sh9iM4_J9okD/exec")
+  function afficherPopup(message) {
+    document.getElementById("popup-message").textContent = message;
+    document.getElementById("popup-observation").style.display = "flex";
+  }
+
+  function fermerPopup() {
+    document.getElementById("popup-observation").style.display = "none";
+  }
+
+  fetch("https://script.google.com/macros/s/AKfycbzLhT6sLOk9iufAKTRC60GfK4uQ4YzcZTYoDQnxp_HUMs6AAjyXClGjuGg05-X9mFVu/exec")
     .then(res => res.json())
     .then(data => {
       const produits = data.produits || [];
@@ -246,7 +298,7 @@
         `;
         div.onclick = () => {
           appliquerRemise(remise * 100);
-          if (observation) alert(observation);
+          if (observation) afficherPopup(observation);
         };
         contratGrid.appendChild(div);
       });
