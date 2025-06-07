@@ -2,347 +2,67 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Rex Diner - Caisse</title>
-  <link id="dynamic-favicon" rel="icon" type="image/png" href="favicon.png">
+  <title>Rex Diner - Accueil</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      background-color: #f5f5f5;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
     .container {
       display: flex;
-      gap: 20px;
-      max-width: 1600px;
-      margin: auto;
+      gap: 40px;
+    }
+
+    .card {
+      width: 300px;
+      height: 300px;
       background: white;
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .produits, .ticket {
-      flex: 1;
-    }
-
-    .produit-grid, .contrat-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 12px;
-    }
-
-    .produit-btn, .contrat-btn {
-      background-color: #e0f2f1;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    .produit-btn:hover, .contrat-btn:hover {
-      background-color: #b2dfdb;
-    }
-
-    .img-produit {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 8px;
-    }
-
-    .quantite-btns {
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       display: flex;
-      justify-content: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .quantite-btn {
-      font-size: 12px;
-      padding: 4px 8px;
-      border: none;
-      background-color: #c8e6c9;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .quantite-btn:hover {
-      background-color: #a5d6a7;
-    }
-
-    .ticket-content {
-      background: #f0f0f0;
-      padding: 10px;
-      border-radius: 10px;
-      min-height: 150px;
-      margin-bottom: 10px;
-    }
-
-    .ticket-line {
-      display: flex;
-      justify-content: space-between;
-      margin: 5px 0;
-    }
-
-    .total {
-      font-weight: bold;
-      font-size: 18px;
-      margin-top: 10px;
-    }
-
-    #total-final {
-      color: orange;
-      font-size: 28px;
-      font-weight: bold;
-      display: block;
-      text-align: center;
-      margin-top: 8px;
-    }
-
-    .remise-btns {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .remise-btns button {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-    }
-
-    .remise-btns button:not(:last-child) {
-      background-color: #4caf50;
-    }
-
-    .remise-btns button:not(:last-child):hover {
-      background-color: #388e3c;
-    }
-
-    .remise-btns button:last-child {
-      background-color: #f44336;
-    }
-
-    .remise-btns button:last-child:hover {
-      background-color: #d32f2f;
-    }
-
-    .produits h2,
-    .ticket h2,
-    .ticket h3 {
-      text-align: center;
-      text-transform: uppercase;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 6px;
-      margin-bottom: 16px;
-      letter-spacing: 1px;
-    }
-
-    #popup-observation {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-    }
-
-    #popup-observation .popup-box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
       text-align: center;
     }
 
-    #popup-observation button {
-      margin-top: 10px;
-      padding: 6px 14px;
-      border: none;
-      border-radius: 6px;
-      background-color: #333;
-      color: white;
-      cursor: pointer;
+    .card:hover {
+      transform: scale(1.05);
     }
 
-    #popup-observation button:hover {
-      background-color: #111;
+    .card img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 20px;
+    }
+
+    .card span {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
     }
   </style>
 </head>
 <body>
-
-<div class="container">
-  <div class="produits">
-    <h2>🛒 Produits</h2>
-    <div id="produit-grid" class="produit-grid"></div>
-  </div>
-
-  <div class="ticket">
-    <h2>🧾 Ticket</h2>
-    <div id="ticket-content" class="ticket-content"></div>
-    <div class="total"><span>Total brut :</span> <span id="total-brut">0,00 $</span></div>
-    <div class="total"><span>Remise :</span> <span id="remise-appliquee">0 % (-0,00 $)</span></div>
-    <div class="total" style="text-align:center;">
-      <span>Total final :</span>
-      <span id="total-final">0,00 $</span>
+  <div class="container">
+    <div class="card" onclick="window.location.href='caisse.html'">
+      <img src="https://cdn-icons-png.flaticon.com/512/263/263115.png" alt="Caisse" />
+      <span>Accéder à la caisse</span>
     </div>
-
-    <!-- Bouton Effacer le ticket -->
-    <div style="text-align: center; margin-top: 10px;">
-      <button onclick="effacerTicket()" style="padding: 8px 14px; background-color: #777; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
-        🗑️ Effacer le ticket
-      </button>
+    <div class="card" onclick="window.location.href='resume.html'">
+      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" alt="Résumé" />
+      <span>Résumé d'activité</span>
     </div>
-
-    <h3>🔻 Réductions rapides</h3>
-    <div class="remise-btns">
-      <button onclick="appliquerRemise(5)">-5%</button>
-      <button onclick="appliquerRemise(10)">-10%</button>
-      <button onclick="appliquerRemise(15)">-15%</button>
-      <button onclick="appliquerRemise(20)">-20%</button>
-      <button onclick="annulerRemise()">Annuler</button>
-    </div>
-
-    <h3>💼 Contrats</h3>
-    <div id="contrat-grid" class="contrat-grid"></div>
   </div>
-</div>
-
-<!-- MODAL HTML -->
-<div id="popup-observation">
-  <div class="popup-box">
-    <p id="popup-message"></p>
-    <button onclick="fermerPopup()">Fermer</button>
-  </div>
-</div>
-
-<script>
-  let ticket = [];
-  let remise = 0;
-
-  function ajouterProduit(nom, prix, quantite = 1) {
-    const item = ticket.find(p => p.nom === nom);
-    if (item) {
-      item.quantite += quantite;
-    } else {
-      ticket.push({ nom, prix, quantite });
-    }
-    afficherTicket();
-  }
-
-  function afficherTicket() {
-    const container = document.getElementById("ticket-content");
-    const totalBrutEl = document.getElementById("total-brut");
-    const remiseEl = document.getElementById("remise-appliquee");
-    const totalFinalEl = document.getElementById("total-final");
-
-    container.innerHTML = '';
-    let total = 0;
-
-    ticket.forEach(({ nom, prix, quantite }) => {
-      const ligne = document.createElement("div");
-      ligne.className = "ticket-line";
-      ligne.innerHTML = `<span>${nom} x${quantite}</span><span>${(prix * quantite).toFixed(2)} $</span>`;
-      container.appendChild(ligne);
-      total += prix * quantite;
-    });
-
-    const remiseMontant = total * (remise / 100);
-    const totalFinal = total - remiseMontant;
-
-    totalBrutEl.textContent = total.toFixed(2) + " $";
-    remiseEl.textContent = `${remise} % (-${remiseMontant.toFixed(2)} $)`;
-    totalFinalEl.textContent = totalFinal.toFixed(2) + " $";
-  }
-
-  function appliquerRemise(pourcentage) {
-    remise = pourcentage;
-    afficherTicket();
-  }
-
-  function annulerRemise() {
-    remise = 0;
-    afficherTicket();
-  }
-
-  function effacerTicket() {
-    ticket = [];
-    remise = 0;
-    afficherTicket();
-  }
-
-  function afficherPopup(message) {
-    document.getElementById("popup-message").textContent = message;
-    document.getElementById("popup-observation").style.display = "flex";
-  }
-
-  function fermerPopup() {
-    document.getElementById("popup-observation").style.display = "none";
-  }
-
-  fetch("https://script.google.com/macros/s/AKfycbzhVC_g7qxPYGPVgSvwyCrR3r9xOrI3mBl7iq15JzOAczMLq0gaEGF1Sh9iM4_J9okD/exec")
-    .then(res => res.json())
-    .then(data => {
-      const produits = data.produits || [];
-      const contrats = data.contrats || [];
-      const siteInfo = data.site?.[0];
-
-      if (siteInfo) {
-        document.title = siteInfo.texte || document.title;
-        const favicon = document.getElementById("dynamic-favicon");
-        if (favicon && siteInfo.logo) {
-          favicon.href = siteInfo.logo;
-        }
-      }
-
-      const produitGrid = document.getElementById("produit-grid");
-      produits.forEach(({ nom, prix, image }) => {
-        const div = document.createElement("div");
-        div.className = "produit-btn";
-        div.innerHTML = `
-          ${image ? `<img src="${image}" class="img-produit" alt="${nom}">` : `<div>${nom}</div>`}
-          <div class="quantite-btns">
-            <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 1)">+1</button>
-            <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 5)">+5</button>
-            <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 10)">+10</button>
-          </div>
-        `;
-        produitGrid.appendChild(div);
-      });
-
-      const contratGrid = document.getElementById("contrat-grid");
-      contrats.forEach(({ nom, remise, image, observation }) => {
-        const div = document.createElement("div");
-        div.className = "contrat-btn";
-        div.title = observation || "";
-        div.innerHTML = `
-          ${image ? `<img src="${image}" class="img-produit" alt="${nom}">` : `<strong>${nom}</strong>`}
-          <div>- ${remise * 100}%</div>
-        `;
-        div.onclick = () => {
-          appliquerRemise(remise * 100);
-          if (observation) afficherPopup(observation);
-        };
-        contratGrid.appendChild(div);
-      });
-    })
-    .catch(err => {
-      console.error("Erreur API :", err);
-      document.body.innerHTML += "<p style='color:red;'>Erreur lors de l’appel à l’API Google.</p>";
-    });
-</script>
-
 </body>
 </html>
