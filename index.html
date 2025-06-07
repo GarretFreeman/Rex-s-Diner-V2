@@ -58,6 +58,39 @@
     .total { font-weight: bold; font-size: 18px; margin-top: 10px; }
     .remise-btns button { margin: 2px; }
   </style>
+    .remise-btns {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.remise-btns button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+}
+
+.remise-btns button:not(:last-child) {
+  background-color: #4caf50; /* Vert pour remises */
+}
+
+.remise-btns button:not(:last-child):hover {
+  background-color: #388e3c;
+}
+
+.remise-btns button:last-child {
+  background-color: #f44336; /* Rouge pour Annuler */
+}
+
+.remise-btns button:last-child:hover {
+  background-color: #d32f2f;
+}
+
 </head>
 <body>
 
