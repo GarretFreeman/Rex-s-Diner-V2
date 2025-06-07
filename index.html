@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Interface Caisse - Rex Diner</title>
+  <meta charset="UTF-8" />
+  <title>Rex Diner - Caisse</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
     .container { display: flex; gap: 20px; max-width: 1600px; margin: auto; background: white; border-radius: 12px; padding: 20px; }
@@ -30,7 +30,10 @@
     .quantite-btns { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
     .quantite-btn { font-size: 12px; padding: 4px 8px; border: none; background-color: #c8e6c9; border-radius: 4px; cursor: pointer; }
     .quantite-btn:hover { background-color: #a5d6a7; }
-    .ticket-content { background: #f0f0f0; padding: 10px; border-radius: 10px; min-height: 150px; }
+    .ticket-content { background: #f0f0f0; padding: 10px; border-radius: 10px; min-height: 150px; margin-bottom: 10px; }
+    .ticket-line { display: flex; justify-content: space-between; margin: 5px 0; }
+    .total { font-weight: bold; font-size: 18px; margin-top: 10px; }
+    .remise-btns button { margin: 2px; }
   </style>
 </head>
 <body>
@@ -42,14 +45,77 @@
   </div>
 
   <div class="ticket">
-    <h2>Contrats</h2>
+    <h2>Ticket</h2>
+    <div id="ticket-content" class="ticket-content"></div>
+    <div class="total"><span>Total brut :</span> <span id="total-brut">0,00 $</span></div>
+    <div class="total"><span>Remise :</span> <span id="remise-appliquee">0 % (-0,00 $)</span></div>
+    <div class="total"><span>Total final :</span> <span id="total-final">0,00 $</span></div>
+
+    <h3>Réductions rapides</h3>
+    <div class="remise-btns">
+      <button onclick="appliquerRemise(5)">-5%</button>
+      <button onclick="appliquerRemise(10)">-10%</button>
+      <button onclick="appliquerRemise(15)">-15%</button>
+      <button onclick="appliquerRemise(20)">-20%</button>
+      <button onclick="annulerRemise()">Annuler</button>
+    </div>
+
+    <h3>Contrats</h3>
     <div id="contrat-grid" class="contrat-grid"></div>
   </div>
 </div>
 
 <script>
-  // Appel à votre Google Apps Script API
-  fetch("https://script.google.com/macros/s/AKfycbzbt0DQ9lXROW4K5i5Grv3N2B-vnxK359dEzBNglBn4XZ66rea1g3rTx_85W6J8oCds/exec")
+  let ticket = [];
+  let remise = 0;
+
+  function ajouterProduit(nom, prix, quantite = 1) {
+    const item = ticket.find(p => p.nom === nom);
+    if (item) {
+      item.quantite += quantite;
+    } else {
+      ticket.push({ nom, prix, quantite });
+    }
+    afficherTicket();
+  }
+
+  function afficherTicket() {
+    const container = document.getElementById("ticket-content");
+    const totalBrutEl = document.getElementById("total-brut");
+    const remiseEl = document.getElementById("remise-appliquee");
+    const totalFinalEl = document.getElementById("total-final");
+
+    container.innerHTML = '';
+    let total = 0;
+
+    ticket.forEach(({ nom, prix, quantite }) => {
+      const ligne = document.createElement("div");
+      ligne.className = "ticket-line";
+      ligne.innerHTML = `<span>${nom} x${quantite}</span><span>${(prix * quantite).toFixed(2)} $</span>`;
+      container.appendChild(ligne);
+      total += prix * quantite;
+    });
+
+    const remiseMontant = total * (remise / 100);
+    const totalFinal = total - remiseMontant;
+
+    totalBrutEl.textContent = total.toFixed(2) + " $";
+    remiseEl.textContent = `${remise} % (-${remiseMontant.toFixed(2)} $)`;
+    totalFinalEl.textContent = totalFinal.toFixed(2) + " $";
+  }
+
+  function appliquerRemise(pourcentage) {
+    remise = pourcentage;
+    afficherTicket();
+  }
+
+  function annulerRemise() {
+    remise = 0;
+    afficherTicket();
+  }
+
+  // Appel à l'API Google Apps Script
+  fetch("https://script.google.com/macros/s/AKfycbwfJZx3pCUVE8fVuBqUqg1i0xlVRdATGD9lFA7P8JwvePUvX8I3IuhZdJGQcpcLgaKo/exec")
     .then(res => res.json())
     .then(data => {
       const produits = data.produits || [];
@@ -62,9 +128,9 @@
         div.innerHTML = `
           ${image ? `<img src="${image}" class="img-produit" alt="${nom}">` : `<div>${nom}</div>`}
           <div class="quantite-btns">
-            <button class="quantite-btn">+1</button>
-            <button class="quantite-btn">+5</button>
-            <button class="quantite-btn">+10</button>
+            <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 1)">+1</button>
+            <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 5)">+5</button>
+            <button class="quantite-btn" onclick="ajouterProduit('${nom}', ${prix}, 10)">+10</button>
           </div>
         `;
         produitGrid.appendChild(div);
@@ -76,18 +142,19 @@
         div.className = "contrat-btn";
         div.title = observation || "";
         div.innerHTML = `
-          <div>
-            ${image ? `<img src="${image}" class="img-produit" alt="${nom}">` : `<strong>${nom}</strong>`}
-            <div>- ${remise * 100}%</div>
-          </div>
+          ${image ? `<img src="${image}" class="img-produit" alt="${nom}">` : `<strong>${nom}</strong>`}
+          <div>- ${remise * 100}%</div>
         `;
-        div.onclick = () => alert(observation || "Aucune observation");
+        div.onclick = () => {
+          appliquerRemise(remise * 100);
+          if (observation) alert(observation);
+        };
         contratGrid.appendChild(div);
       });
     })
     .catch(err => {
-      console.error("Erreur lors de l'appel API :", err);
-      document.body.innerHTML += `<p style="color:red;">Erreur lors de l'appel à l'API.</p>`;
+      console.error("Erreur API :", err);
+      document.body.innerHTML += "<p style='color:red;'>Erreur lors de l’appel à l’API Google.</p>";
     });
 </script>
 
