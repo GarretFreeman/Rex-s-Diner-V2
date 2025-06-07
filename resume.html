@@ -9,16 +9,6 @@
       margin: 0;
       padding: 40px;
       background-color: #f9f9f9;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 32px;
-      margin-bottom: 30px;
-      text-transform: uppercase;
-      border-bottom: 2px solid #ccc;
-      display: inline-block;
-      padding-bottom: 6px;
     }
 
     .retour-btn {
@@ -34,10 +24,35 @@
       cursor: pointer;
     }
 
-    .contenu {
-      margin-top: 100px;
-      font-size: 20px;
-      color: #777;
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #ccc;
+      display: inline-block;
+      padding-bottom: 6px;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fafafa;
     }
   </style>
 </head>
@@ -47,10 +62,55 @@
 
 <h1>📊 Résumé d'activité</h1>
 
-<div class="contenu">
-  <p>Cette section est en construction.</p>
-  <p>Les graphiques et indicateurs apparaîtront ici prochainement.</p>
-</div>
+<table id="stat-table">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Livraisons PNJ</th>
+      <th>Montant Livraison PNJ</th>
+      <th>Prime Livraison</th>
+      <th>Ventes comptoir PNJ</th>
+      <th>Montant Vente PNJ</th>
+      <th>Prime Vente PNJ</th>
+      <th>Facturation client</th>
+      <th>Prime facturation</th>
+      <th>Salaire total</th>
+      <th>Dernière activité</th>
+    </tr>
+  </thead>
+  <tbody id="stat-body"></tbody>
+</table>
+
+<script>
+  fetch("https://script.google.com/macros/s/AKfycbzhVC_g7qxPYGPVgSvwyCrR3r9xOrI3mBl7iq15JzOAczMLq0gaEGF1Sh9iM4_J9okD/exec")
+    .then(res => res.json())
+    .then(data => {
+      const stats = data.stat || []; // <-- doit être renvoyé dans l'API
+      const tbody = document.getElementById("stat-body");
+
+      stats.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.nom}</td>
+          <td>${row.livraisonsPNJ}</td>
+          <td>${row.montantLivraison}</td>
+          <td>${row.primeLivraison}</td>
+          <td>${row.ventesPNJ}</td>
+          <td>${row.montantVentePNJ}</td>
+          <td>${row.primeVentePNJ}</td>
+          <td>${row.facturation}</td>
+          <td>${row.primeFacturation}</td>
+          <td>${row.salaire}</td>
+          <td>${row.derniereActivite}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(err => {
+      console.error("Erreur API :", err);
+      document.getElementById("stat-body").innerHTML = `<tr><td colspan="11" style="color:red;">Erreur de chargement des données</td></tr>`;
+    });
+</script>
 
 </body>
 </html>
