@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Résumé d'activité - Rex Diner</title>
   <style>
     body {
@@ -15,7 +15,7 @@
       position: absolute;
       top: 20px;
       left: 20px;
-      padding: 8px 14px;
+      padding: 10px 16px;
       background-color: #555;
       color: white;
       border: none;
@@ -26,83 +26,129 @@
 
     h1 {
       text-align: center;
-      font-size: 28px;
+      font-size: 32px;
       text-transform: uppercase;
       border-bottom: 2px solid #ccc;
       display: inline-block;
-      padding-bottom: 6px;
-      margin-bottom: 30px;
+      margin: 0 auto 30px;
+      padding-bottom: 10px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 40px;
+      margin-top: 30px;
     }
 
     th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
+      border: 1px solid #ccc;
+      padding: 8px;
       text-align: center;
-      font-size: 14px;
     }
 
     th {
-      background-color: #f0f0f0;
+      background-color: #eee;
+      text-transform: uppercase;
     }
 
-    tr:nth-child(even) {
-      background-color: #fafafa;
+    td {
+      background-color: white;
     }
   </style>
 </head>
 <body>
 
-<button class="retour-btn" onclick="window.location.href='index.html'">⬅️ Retour à l’accueil</button>
+<button class="retour-btn" onclick="window.location.href='index.html'">⬅️ Retour à l'accueil</button>
 
-<h1>📊 Résumé d'activité</h1>
+<h1>Résumé d'activité</h1>
 
-<table id="stat-table">
+<table>
   <thead>
     <tr>
       <th>Nom</th>
       <th>Livraisons PNJ</th>
-      <th>Montant Livraison PNJ</th>
-      <th>Prime Livraison</th>
-      <th>Ventes comptoir PNJ</th>
-      <th>Montant Vente PNJ</th>
-      <th>Prime Vente PNJ</th>
-      <th>Facturation client</th>
-      <th>Prime facturation</th>
-      <th>Salaire total</th>
-      <th>Dernière activité</th>
+      <th>Montant Livraisons</th>
+      <th>Prime Livraisons</th>
+      <th>Ventes PNJ</th>
+      <th>Montant Ventes</th>
+      <th>Prime Ventes</th>
+      <th>Facturation Client</th>
+      <th>Prime Facturation</th>
+      <th>Salaire</th>
+      <th>Dern. Activité</th>
     </tr>
   </thead>
-  <tbody id="stat-body"></tbody>
+  <tbody id="stat-body">
+    <tr><td colspan="11">Chargement...</td></tr>
+  </tbody>
 </table>
 
 <script>
-  fetch("https://script.google.com/macros/s/AKfycbwnVZDjR2cXNafXGMzTOuELEFpSCc7iG6luip_spEZdvogfYdWqEfsYUIt4hm3xCiUq/exec")
+  function formatDollar(value) {
+    const number = parseFloat(value);
+    if (isNaN(number)) return "-";
+    return `${Math.round(number)} $`;
+  }
+
+  function formatDate(value) {
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return value;
+    return date.toLocaleString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  fetch("https://script.google.com/macros/s/AKfycbzhVC_g7qxPYGPVgSvwyCrR3r9xOrI3mBl7iq15JzOAczMLq0gaEGF1Sh9iM4_J9okD/exec")
     .then(res => res.json())
     .then(data => {
-      const stats = data.stat || []; // <-- doit être renvoyé dans l'API
+      const stats = data.stat || [];
       const tbody = document.getElementById("stat-body");
+      tbody.innerHTML = "";
+
+      stats.sort((a, b) => new Date(b.derniereActivite) - new Date(a.derniereActivite));
 
       stats.forEach(row => {
         const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.nom}</td>
-          <td>${row.livraisonsPNJ}</td>
-          <td>${row.montantLivraison}</td>
-          <td>${row.primeLivraison}</td>
-          <td>${row.ventesPNJ}</td>
-          <td>${row.montantVentePNJ}</td>
-          <td>${row.primeVentePNJ}</td>
-          <td>${row.facturation}</td>
-          <td>${row.primeFacturation}</td>
-          <td>${row.salaire}</td>
-          <td>${row.derniereActivite}</td>
-        `;
+
+        function createCell(value, isMonetary = false) {
+          const td = document.createElement("td");
+          let content = value;
+
+          if (value === "" || value == null) {
+            td.style.backgroundColor = "#f0f0f0";
+            content = "-";
+          } else if (isMonetary) {
+            content = formatDollar(value);
+          }
+
+          td.textContent = content;
+          return td;
+        }
+
+        tr.appendChild(createCell(row.nom));
+        tr.appendChild(createCell(row.livraisonsPNJ));
+        tr.appendChild(createCell(row.montantLivraison, true));
+        tr.appendChild(createCell(row.primeLivraison, true));
+        tr.appendChild(createCell(row.ventesPNJ));
+        tr.appendChild(createCell(row.montantVentePNJ, true));
+        tr.appendChild(createCell(row.primeVentePNJ, true));
+        tr.appendChild(createCell(row.facturation, true));
+        tr.appendChild(createCell(row.primeFacturation, true));
+        tr.appendChild(createCell(row.salaire, true));
+
+        const tdDate = document.createElement("td");
+        if (row.derniereActivite === "" || row.derniereActivite == null) {
+          tdDate.textContent = "-";
+          tdDate.style.backgroundColor = "#f0f0f0";
+        } else {
+          tdDate.textContent = formatDate(row.derniereActivite);
+        }
+        tr.appendChild(tdDate);
+
         tbody.appendChild(tr);
       });
     })
