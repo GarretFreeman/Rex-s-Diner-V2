@@ -97,57 +97,58 @@
   </table>
 
   <script>
-    const apiUrl = "https://script.google.com/macros/s/AKfycbz9MatCRb7IN57HAbYz62OP1pcBanO3YxIQJ3h9GvcmHGVUbD0msaevBAzF0UBfP72q/exec";
+  const apiUrl = "https://script.google.com/macros/s/AKfycbxzHIlU3GL7cO3U2B1EmcaXLvnc9n7hzYCuQw9ZcAweP7WK7JBw6Qi2VduroiVSdjRD/exec";
 
-    function parseDate(dateStr) {
-      const parts = dateStr.split('/');
-      if (parts.length !== 3) return null;
-      const [day, month, year] = parts;
-      return new Date(`${year}-${month}-${day}`);
-    }
+  function parseDate(dateStr) {
+    const parts = dateStr.split('/');
+    if (parts.length !== 3) return null;
+    return new Date(parts[2], parts[1] - 1, parts[0]);
+  }
 
-    function formatDate(dateStr) {
-      const date = parseDate(dateStr);
-      if (!date || isNaN(date)) return dateStr;
-      return date.toLocaleDateString('fr-FR');
-    }
+  function formatDate(dateObj) {
+    if (!dateObj || isNaN(dateObj.getTime())) return '';
+    return dateObj.toLocaleDateString('fr-FR');
+  }
 
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        const rh = data.rh || [];
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      const rh = data.rh || [];
 
-        rh.sort((a, b) => parseDate(b.dateEmbauche) - parseDate(a.dateEmbauche));
+      // Trier par date d'embauche (décroissant)
+      rh.sort((a, b) => parseDate(b.dateEmbauche) - parseDate(a.dateEmbauche));
 
-        const tbody = document.querySelector("#rhTable tbody");
+      const tbody = document.querySelector("#rhTable tbody");
 
-        rh.forEach(entry => {
-          const tr = document.createElement("tr");
+      rh.forEach(entry => {
+        const dateObj = parseDate(entry.dateEmbauche);
+        const contratUrl = entry.contratTravail?.trim();
+        const visiteStr = String(entry.visiteMedicale).toLowerCase();
+        const hasVisite = visiteStr === 'true' || visiteStr === 'oui';
 
-          // Contrat de travail (icône lien)
-          const contrat = entry.contratTravail
-            ? `<a href="${entry.contratTravail}" target="_blank" class="contrat-icon" title="Voir le contrat">📄</a>`
-            : '';
+        const tr = document.createElement("tr");
 
-          // Visite médicale : ✅ ou case rouge
-          const visite = entry.visiteMedicale?.toLowerCase() === "true"
-            ? `<span class="visite-ok">✅</span>`
-            : `<td class="visite-ko"></td>`;
+        tr.innerHTML = `
+          <td>${entry.nomPrenom}</td>
+          <td>${entry.telephone}</td>
+          <td>${entry.grade}</td>
+          <td>${formatDate(dateObj)}</td>
+          <td>
+            ${contratUrl ? `
+              <a href="${contratUrl}" target="_blank" title="Voir le contrat">
+                <img class="pdf-icon" src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="Contrat PDF">
+              </a>` : ''
+            }
+          </td>
+          <td class="${hasVisite ? '' : 'missing'}">
+            ${hasVisite ? '<span class="tick">✔️</span>' : ''}
+          </td>
+        `;
 
-          tr.innerHTML = `
-            <td>${entry.nomPrenom}</td>
-            <td>${entry.telephone}</td>
-            <td>${entry.grade}</td>
-            <td>${formatDate(entry.dateEmbauche)}</td>
-            <td>${contrat}</td>
-            ${visite}
-          `;
-          tbody.appendChild(tr);
-        });
-      })
-      .catch(error => {
-        console.error("Erreur API :", error);
+        tbody.appendChild(tr);
       });
-  </script>
-</body>
-</html>
+    })
+    .catch(error => {
+      console.error("Erreur API :", error);
+    });
+</script>
