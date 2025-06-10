@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Ressources Humaines - Rex Diner</title>
+  <link rel="icon" type="image/png" href="https://i.ibb.co/pvgVjRyX/logo-rex-diner.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .retour {
+      display: block;
+      margin: 0 auto 30px auto;
+      width: fit-content;
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .retour:hover {
+      background-color: #555;
+    }
+
+    table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #333;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div style="margin-bottom: 20px;">
+    <button onclick="window.location.href='index.html'" style="padding: 10px 16px; background-color: #555; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+      ⬅️ Retour à l'accueil
+    </button>
+  </div>
+  <h1>Équipe - Ressources Humaines</h1>
+  <table id="rhTable">
+    <thead>
+      <tr>
+        <th>Nom & Prénom</th>
+        <th>Téléphone</th>
+        <th>Grade</th>
+        <th>Date d'embauche</th>
+        <th>Contrat de travail</th>
+        <th>Visite médicale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Contenu dynamique -->
+    </tbody>
+  </table>
+
+  <script>
+    const apiUrl = "https://script.google.com/macros/s/AKfycbxzHIlU3GL7cO3U2B1EmcaXLvnc9n7hzYCuQw9ZcAweP7WK7JBw6Qi2VduroiVSdjRD/exec";
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const rh = data.rh || [];
+        const tbody = document.querySelector("#rhTable tbody");
+
+        rh.forEach(entry => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${entry.nomPrenom}</td>
+            <td>${entry.telephone}</td>
+            <td>${entry.grade}</td>
+            <td>${entry.dateEmbauche}</td>
+            <td>${entry.contratTravail}</td>
+            <td>${entry.visiteMedicale}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(error => {
+        console.error("Erreur API :", error);
+      });
+  </script>
+</body>
+</html>
