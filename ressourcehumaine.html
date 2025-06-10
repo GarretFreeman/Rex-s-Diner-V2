@@ -79,12 +79,23 @@
   </table>
 
   <script>
-    const apiUrl = "https://script.google.com/macros/s/AKfycbz9MatCRb7IN57HAbYz62OP1pcBanO3YxIQJ3h9GvcmHGVUbD0msaevBAzF0UBfP72q/exec";
+    const apiUrl = "https://script.google.com/macros/s/AKfycbxzHIlU3GL7cO3U2B1EmcaXLvnc9n7hzYCuQw9ZcAweP7WK7JBw6Qi2VduroiVSdjRD/exec";
+
+    function parseDate(dateStr) {
+      // Format attendu : JJ/MM/AAAA
+      const parts = dateStr.split('/');
+      if (parts.length !== 3) return new Date('1900-01-01'); // fallback
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
 
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
         const rh = data.rh || [];
+
+        // Tri par date d'embauche décroissante
+        rh.sort((a, b) => parseDate(b.dateEmbauche) - parseDate(a.dateEmbauche));
+
         const tbody = document.querySelector("#rhTable tbody");
 
         rh.forEach(entry => {
