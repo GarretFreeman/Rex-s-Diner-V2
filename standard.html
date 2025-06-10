@@ -14,7 +14,24 @@
 
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+    }
+
+    .retour {
+      display: block;
+      margin: 0 auto 30px auto;
+      width: fit-content;
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .retour:hover {
+      background-color: #555;
     }
 
     table {
@@ -29,7 +46,7 @@
     th, td {
       padding: 12px 15px;
       border: 1px solid #ccc;
-      text-align: left;
+      text-align: center; /* centrage des cellules */
     }
 
     th {
@@ -38,15 +55,16 @@
     }
 
     .dispo-true {
-      background-color: #c8e6c9; /* vert clair */
+      background-color: #c8e6c9;
     }
 
     .dispo-false {
-      background-color: #ffcdd2; /* rouge clair */
+      background-color: #ffcdd2;
     }
   </style>
 </head>
 <body>
+  <a class="retour" href="index.html">← Retour à l'accueil</a>
   <h1>État du Standard</h1>
   <table id="standardTable">
     <thead>
@@ -54,7 +72,7 @@
         <th>Date</th>
         <th>Numéro</th>
         <th>Répondu</th>
-        <th>Durée(en sec)</th>
+        <th>Durée (en sec)</th>
       </tr>
     </thead>
     <tbody>
@@ -63,7 +81,20 @@
   </table>
 
   <script>
-    const apiUrl = "https://script.google.com/macros/s/AKfycbxzHIlU3GL7cO3U2B1EmcaXLvnc9n7hzYCuQw9ZcAweP7WK7JBw6Qi2VduroiVSdjRD/exec"; // 🔁 Remplace ici par l'URL de ton API Apps Script
+    const apiUrl = "https://script.google.com/macros/s/AKfycbxzHIlU3GL7cO3U2B1EmcaXLvnc9n7hzYCuQw9ZcAweP7WK7JBw6Qi2VduroiVSdjRD/exec";
+
+    function formatDateTime(value) {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return value; // garde tel quel si invalide
+      return date.toLocaleString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+    }
 
     fetch(apiUrl)
       .then(response => response.json())
@@ -74,7 +105,7 @@
         standard.forEach(entry => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td>${entry.nom}</td>
+            <td>${formatDateTime(entry.nom)}</td>
             <td>${entry.poste}</td>
             <td class="${entry.disponible ? 'dispo-true' : 'dispo-false'}">${entry.disponible ? 'Oui' : 'Non'}</td>
             <td>${entry.remarques}</td>
