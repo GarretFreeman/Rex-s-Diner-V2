@@ -53,6 +53,24 @@
       background-color: #333;
       color: white;
     }
+
+    .visite-ok {
+      color: green;
+      font-size: 18px;
+    }
+
+    .visite-ko {
+      background-color: #ffcccc;
+    }
+
+    .contrat-icon {
+      font-size: 18px;
+      text-decoration: none;
+    }
+
+    .contrat-icon:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
@@ -79,13 +97,19 @@
   </table>
 
   <script>
-    const apiUrl = "https://script.google.com/macros/s/AKfycbz9MatCRb7IN57HAbYz62OP1pcBanO3YxIQJ3h9GvcmHGVUbD0msaevBAzF0UBfP72q/exec";
+    const apiUrl = "https://script.google.com/macros/s/AKfycbxzHIlU3GL7cO3U2B1EmcaXLvnc9n7hzYCuQw9ZcAweP7WK7JBw6Qi2VduroiVSdjRD/exec";
 
     function parseDate(dateStr) {
-      // Format attendu : JJ/MM/AAAA
       const parts = dateStr.split('/');
-      if (parts.length !== 3) return new Date('1900-01-01'); // fallback
-      return new Date(parts[2], parts[1] - 1, parts[0]);
+      if (parts.length !== 3) return null;
+      const [day, month, year] = parts;
+      return new Date(`${year}-${month}-${day}`);
+    }
+
+    function formatDate(dateStr) {
+      const date = parseDate(dateStr);
+      if (!date || isNaN(date)) return dateStr;
+      return date.toLocaleDateString('fr-FR');
     }
 
     fetch(apiUrl)
@@ -93,20 +117,30 @@
       .then(data => {
         const rh = data.rh || [];
 
-        // Tri par date d'embauche décroissante
         rh.sort((a, b) => parseDate(b.dateEmbauche) - parseDate(a.dateEmbauche));
 
         const tbody = document.querySelector("#rhTable tbody");
 
         rh.forEach(entry => {
           const tr = document.createElement("tr");
+
+          // Contrat de travail (icône lien)
+          const contrat = entry.contratTravail
+            ? `<a href="${entry.contratTravail}" target="_blank" class="contrat-icon" title="Voir le contrat">📄</a>`
+            : '';
+
+          // Visite médicale : ✅ ou case rouge
+          const visite = entry.visiteMedicale?.toLowerCase() === "true"
+            ? `<span class="visite-ok">✅</span>`
+            : `<td class="visite-ko"></td>`;
+
           tr.innerHTML = `
             <td>${entry.nomPrenom}</td>
             <td>${entry.telephone}</td>
             <td>${entry.grade}</td>
-            <td>${entry.dateEmbauche}</td>
-            <td>${entry.contratTravail}</td>
-            <td>${entry.visiteMedicale}</td>
+            <td>${formatDate(entry.dateEmbauche)}</td>
+            <td>${contrat}</td>
+            ${visite}
           `;
           tbody.appendChild(tr);
         });
