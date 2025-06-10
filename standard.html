@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Standard - Rex Diner</title>
+  <link rel="icon" type="image/png" href="https://i.ibb.co/pvgVjRyX/logo-rex-diner.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #333;
+      color: white;
+    }
+
+    .dispo-true {
+      background-color: #c8e6c9; /* vert clair */
+    }
+
+    .dispo-false {
+      background-color: #ffcdd2; /* rouge clair */
+    }
+  </style>
+</head>
+<body>
+  <h1>État du Standard</h1>
+  <table id="standardTable">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Poste</th>
+        <th>Disponible</th>
+        <th>Remarques</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Les données seront insérées ici -->
+    </tbody>
+  </table>
+
+  <script>
+    const sheetID = "1lVCj1qZFd51hEpSQDfOkdkX6QGcRqiCJj1mLvFdYfH8";
+    const sheetName = "Standard";
+    const range = "A:E";
+    const apiKey = "https://script.google.com/macros/s/AKfycbx0MPEuQmt-PS2VX0JXy04z_-xuQT-Jy6m4n1zw5iQLDcgi5pVmDPKwE75h_YJkS5s7/exec"; // ⚠️ Remplace par ta vraie API Key
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetName}!${range}?key=${apiKey}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const rows = data.values || [];
+        const tableBody = document.querySelector("#standardTable tbody");
+
+        // Enlever les 2 premières lignes si ce sont des entêtes
+        const dataRows = rows.slice(2).slice(-10); // 10 dernières lignes
+
+        dataRows.forEach(row => {
+          const nom = row[0] || "";
+          const poste = row[2] || "";
+          const dispo = (row[3] || "").toLowerCase() === "vrai";
+          const remarques = row[4] || "";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${nom}</td>
+            <td>${poste}</td>
+            <td class="${dispo ? 'dispo-true' : 'dispo-false'}">${dispo ? 'Oui' : 'Non'}</td>
+            <td>${remarques}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      })
+      .catch(error => {
+        console.error("Erreur lors du chargement des données Google Sheets :", error);
+      });
+  </script>
+</body>
+</html>
