@@ -11,7 +11,7 @@
       padding: 20px;
       min-height: 100vh;
       position: relative;
-      overflow: hidden;
+      overflow-y: auto; /* ✅ Permet le scroll vertical */
     }
 
     body::before {
@@ -31,14 +31,22 @@
 
     .container {
       display: flex;
+      flex-direction: column; /* ✅ Par défaut en colonne */
       gap: 20px;
       max-width: 1600px;
+      width: 100%;
       margin: auto;
       background: white;
       border-radius: 12px;
       padding: 20px;
       position: relative;
       z-index: 1;
+    }
+
+    @media (min-width: 900px) {
+      .container {
+        flex-direction: row; /* ✅ Repasser en ligne sur grands écrans */
+      }
     }
 
     .produits, .ticket {
