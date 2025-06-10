@@ -116,6 +116,8 @@
       stats.sort((a, b) => new Date(b.derniereActivite) - new Date(a.derniereActivite));
 
       stats.forEach(row => {
+        if (!row.nom || row.nom.trim() === "") return;
+
         const tr = document.createElement("tr");
 
         function createCell(value, isMonetary = false) {
