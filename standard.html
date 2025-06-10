@@ -58,45 +58,32 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Les données seront insérées ici -->
+      <!-- Contenu dynamique -->
     </tbody>
   </table>
 
   <script>
-    const sheetID = "1lVCj1qZFd51hEpSQDfOkdkX6QGcRqiCJj1mLvFdYfH8";
-    const sheetName = "Standard";
-    const range = "A:E";
-    const apiKey = "https://script.google.com/macros/s/AKfycbx0MPEuQmt-PS2VX0JXy04z_-xuQT-Jy6m4n1zw5iQLDcgi5pVmDPKwE75h_YJkS5s7/exec"; // ⚠️ Remplace par ta vraie API Key
+    const apiUrl = "https://script.google.com/macros/s/TON_ID_SCRIPT/exec"; // 🔁 Remplace ici par l'URL de ton API Apps Script
 
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetName}!${range}?key=${apiKey}`;
-
-    fetch(url)
+    fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
-        const rows = data.values || [];
-        const tableBody = document.querySelector("#standardTable tbody");
+        const standard = data.standard || [];
+        const tbody = document.querySelector("#standardTable tbody");
 
-        // Enlever les 2 premières lignes si ce sont des entêtes
-        const dataRows = rows.slice(2).slice(-10); // 10 dernières lignes
-
-        dataRows.forEach(row => {
-          const nom = row[0] || "";
-          const poste = row[2] || "";
-          const dispo = (row[3] || "").toLowerCase() === "vrai";
-          const remarques = row[4] || "";
-
+        standard.forEach(entry => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td>${nom}</td>
-            <td>${poste}</td>
-            <td class="${dispo ? 'dispo-true' : 'dispo-false'}">${dispo ? 'Oui' : 'Non'}</td>
-            <td>${remarques}</td>
+            <td>${entry.nom}</td>
+            <td>${entry.poste}</td>
+            <td class="${entry.disponible ? 'dispo-true' : 'dispo-false'}">${entry.disponible ? 'Oui' : 'Non'}</td>
+            <td>${entry.remarques}</td>
           `;
-          tableBody.appendChild(tr);
+          tbody.appendChild(tr);
         });
       })
       .catch(error => {
-        console.error("Erreur lors du chargement des données Google Sheets :", error);
+        console.error("Erreur API :", error);
       });
   </script>
 </body>
