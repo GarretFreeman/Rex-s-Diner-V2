@@ -10,21 +10,24 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-image: url('https://i.ibb.co/pvgVjRyX/logo-rex-diner.png"'); /* Remplace par ton image */
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://i.ibb.co/pvgVjRyX/logo-rex-diner.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      height: 100vh;
-    }
-      .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: white; /* ou autre selon ton effet souhaité */
-        opacity: 0.5;
-        z-index: 0;
+      opacity: 0.5; /* transparence de l’image de fond */
+      z-index: 0;
     }
 
     .container {
@@ -34,6 +37,8 @@
       height: 100vh;
       gap: 40px;
       flex-wrap: wrap;
+      position: relative;
+      z-index: 1; /* contenu au-dessus du fond */
     }
 
     .card {
@@ -67,8 +72,6 @@
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
-
   <div class="container">
     <div class="card" onclick="window.location.href='caisse.html'">
       <img src="https://i.ibb.co/rKT93TPc/pack-kooron-cx901-23711611.jpg" alt="Caisse">
