@@ -116,7 +116,7 @@ function formatDate(dateObj) {
       .then(data => {
         const rh = data.rh || [];
 
-        rh.sort((a, b) => parseDate(b.dateEmbauche) - parseDate(a.dateEmbauche));
+        rh.sort((a, b) => parseDate(a.dateEmbauche) - parseDate(b.dateEmbauche));
 
         const tbody = document.querySelector("#rhTable tbody");
 
