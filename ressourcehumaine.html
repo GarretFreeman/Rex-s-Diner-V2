@@ -121,6 +121,8 @@ function formatDate(dateObj) {
         const tbody = document.querySelector("#rhTable tbody");
 
         rh.forEach(entry => {
+          if (!entry.nomPrenom || entry.nomPrenom.trim() === '') return;
+
           const dateObj = parseDate(entry.dateEmbauche);
           const contratUrl = entry.contratTravail?.trim();
           const visiteStr = String(entry.visiteMedicale).toLowerCase();
