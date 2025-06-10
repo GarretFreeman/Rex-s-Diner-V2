@@ -98,15 +98,18 @@
     const apiUrl = "https://script.google.com/macros/s/AKfycbw2zgf1WtADkAYKA27t5PJgk_KuOslzS5pBw99s9dd_ykeTCMcQfnftqkzd27I39Hkl/exec";
 
     function parseDate(dateStr) {
-      const parts = dateStr.split('/');
-      if (parts.length !== 3) return null;
-      return new Date(parts[2], parts[1] - 1, parts[0]);
-    }
+  const date = new Date(dateStr);
+  return isNaN(date.getTime()) ? null : date;
+}
 
-    function formatDate(dateObj) {
-      if (!dateObj || isNaN(dateObj.getTime())) return '';
-      return dateObj.toLocaleDateString('fr-FR');
-    }
+function formatDate(dateObj) {
+  if (!dateObj || isNaN(dateObj.getTime())) return '';
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const year = dateObj.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 
     fetch(apiUrl)
       .then(response => response.json())
