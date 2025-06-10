@@ -47,6 +47,7 @@
       padding: 12px 15px;
       border: 1px solid #ccc;
       text-align: center;
+      vertical-align: middle;
     }
 
     th {
@@ -54,22 +55,19 @@
       color: white;
     }
 
-    .visite-ok {
+    .pdf-icon {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+    }
+
+    .tick {
+      font-size: 20px;
       color: green;
-      font-size: 18px;
     }
 
-    .visite-ko {
-      background-color: #ffcccc;
-    }
-
-    .contrat-icon {
-      font-size: 18px;
-      text-decoration: none;
-    }
-
-    .contrat-icon:hover {
-      opacity: 0.8;
+    .missing {
+      background-color: #ffcdd2;
     }
   </style>
 </head>
@@ -97,58 +95,59 @@
   </table>
 
   <script>
-  const apiUrl = "https://script.google.com/macros/s/AKfycbynD1Hxs5taBwRqNVoop-KkvfBh7JqGgH3g98ItWlFfTyLaYSPErYjm-RBrnhEScY7J/exec";
+    const apiUrl = "https://script.google.com/macros/s/AKfycbw2zgf1WtADkAYKA27t5PJgk_KuOslzS5pBw99s9dd_ykeTCMcQfnftqkzd27I39Hkl/exec";
 
-  function parseDate(dateStr) {
-    const parts = dateStr.split('/');
-    if (parts.length !== 3) return null;
-    return new Date(parts[2], parts[1] - 1, parts[0]);
-  }
+    function parseDate(dateStr) {
+      const parts = dateStr.split('/');
+      if (parts.length !== 3) return null;
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
 
-  function formatDate(dateObj) {
-    if (!dateObj || isNaN(dateObj.getTime())) return '';
-    return dateObj.toLocaleDateString('fr-FR');
-  }
+    function formatDate(dateObj) {
+      if (!dateObj || isNaN(dateObj.getTime())) return '';
+      return dateObj.toLocaleDateString('fr-FR');
+    }
 
-  fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-      const rh = data.rh || [];
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const rh = data.rh || [];
 
-      // Trier par date d'embauche (décroissant)
-      rh.sort((a, b) => parseDate(b.dateEmbauche) - parseDate(a.dateEmbauche));
+        rh.sort((a, b) => parseDate(b.dateEmbauche) - parseDate(a.dateEmbauche));
 
-      const tbody = document.querySelector("#rhTable tbody");
+        const tbody = document.querySelector("#rhTable tbody");
 
-      rh.forEach(entry => {
-        const dateObj = parseDate(entry.dateEmbauche);
-        const contratUrl = entry.contratTravail?.trim();
-        const visiteStr = String(entry.visiteMedicale).toLowerCase();
-        const hasVisite = visiteStr === 'true' || visiteStr === 'oui';
+        rh.forEach(entry => {
+          const dateObj = parseDate(entry.dateEmbauche);
+          const contratUrl = entry.contratTravail?.trim();
+          const visiteStr = String(entry.visiteMedicale).toLowerCase();
+          const hasVisite = visiteStr === 'true' || visiteStr === 'oui';
 
-        const tr = document.createElement("tr");
+          const tr = document.createElement("tr");
 
-        tr.innerHTML = `
-          <td>${entry.nomPrenom}</td>
-          <td>${entry.telephone}</td>
-          <td>${entry.grade}</td>
-          <td>${formatDate(dateObj)}</td>
-          <td>
-            ${contratUrl ? `
-              <a href="${contratUrl}" target="_blank" title="Voir le contrat">
-                <img class="pdf-icon" src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="Contrat PDF">
-              </a>` : ''
-            }
-          </td>
-          <td class="${hasVisite ? '' : 'missing'}">
-            ${hasVisite ? '<span class="tick">✔️</span>' : ''}
-          </td>
-        `;
+          tr.innerHTML = `
+            <td>${entry.nomPrenom}</td>
+            <td>${entry.telephone}</td>
+            <td>${entry.grade}</td>
+            <td>${formatDate(dateObj)}</td>
+            <td>
+              ${contratUrl ? `
+                <a href="${contratUrl}" target="_blank" title="Voir le contrat">
+                  <img class="pdf-icon" src="https://cdn-icons-png.flaticon.com/128/942/942748.png" alt="Contrat">
+                </a>` : ''
+              }
+            </td>
+            <td class="${hasVisite ? '' : 'missing'}">
+              ${hasVisite ? '<span class="tick">✔️</span>' : ''}
+            </td>
+          `;
 
-        tbody.appendChild(tr);
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(error => {
+        console.error("Erreur API :", error);
       });
-    })
-    .catch(error => {
-      console.error("Erreur API :", error);
-    });
-</script>
+  </script>
+</body>
+</html>
