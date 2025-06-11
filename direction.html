@@ -8,91 +8,131 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f4f6;
     }
 
-    .header-buttons {
+    .header {
       padding: 20px;
-      background-color: #fff;
-      border-bottom: 1px solid #ccc;
+      background-color: #222;
+      color: white;
+      text-align: center;
     }
 
-    .header-buttons button {
-      padding: 10px 16px;
+    .back-btn {
       background-color: #555;
       color: white;
       border: none;
+      padding: 10px 16px;
       border-radius: 6px;
-      font-weight: bold;
       cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
     }
 
-    .header-buttons button:hover {
+    .back-btn:hover {
       background-color: #333;
     }
 
     h1 {
-      text-align: center;
-      font-size: 36px;
-      margin: 30px 0;
-      color: #333;
+      font-size: 32px;
+      margin: 20px 0;
     }
 
-    .section {
-      max-width: 800px;
-      margin: 0 auto 40px auto;
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
     }
 
-    .section h2 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 10px;
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     }
 
-    .section ul {
-      list-style: none;
-      padding-left: 0;
+    .card h2 {
+      margin-top: 16px;
+      font-size: 20px;
+      color: #222;
     }
 
-    .section ul li {
-      padding: 10px 0;
-      font-size: 18px;
+    .card p {
+      color: #555;
+      font-size: 14px;
+      margin: 10px 0 0;
     }
 
-    .section ul li a {
-      color: #0066cc;
+    .card img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    a {
       text-decoration: none;
-      font-weight: bold;
-    }
-
-    .section ul li a:hover {
-      text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
-  <div class="header-buttons">
-    <button onclick="window.location.href='index.html'">⬅️ Retour à l'accueil</button>
+  <div class="header">
+    <h1>Espace Direction</h1>
+    <button class="back-btn" onclick="window.location.href='index.html'">⬅️ Retour à l'accueil</button>
   </div>
 
-  <h1>Espace Direction</h1>
+  <div class="grid">
+    <a href="https://docs.google.com/spreadsheets/d/1lVCj1qZFd51hEpSQDfOkdkX6QGcRqiCJj1mLvFdYfH8/edit?gid=485697670" target="_blank">
+      <div class="card">
+        <img src="https://i.ibb.co/jzPv4Sv/web-icon.png" alt="Site Web">
+        <h2>Gestion du site internet</h2>
+        <p>Mise à jour du contenu, liens, standard</p>
+      </div>
+    </a>
 
-  <div class="section">
-    <h2>Outils de gestion</h2>
-    <ul>
-      <li>🌐 <a href="https://docs.google.com/spreadsheets/d/1lVCj1qZFd51hEpSQDfOkdkX6QGcRqiCJj1mLvFdYfH8/edit?gid=485697670" target="_blank">Gestion du site internet</a></li>
-      <li>🧾 <a href="https://docs.google.com/spreadsheets/d/1ixmnTKR2u9XdbwaYB67D6lCce-QpKTpHTkjsERRJ3Us/edit?gid=1049653321" target="_blank">Édition des fiches de paie</a></li>
-      <li>👥 <a href="https://docs.google.com/spreadsheets/d/1ixmnTKR2u9XdbwaYB67D6lCce-QpKTpHTkjsERRJ3Us/edit?gid=628608397" target="_blank">Gestion des employés et contrats de travail</a></li>
-      <li>🛒 <a href="https://docs.google.com/spreadsheets/d/1ixmnTKR2u9XdbwaYB67D6lCce-QpKTpHTkjsERRJ3Us/edit?gid=181774848" target="_blank">Gestion des achats</a></li>
-      <li>📈 <a href="https://docs.google.com/spreadsheets/d/1ixmnTKR2u9XdbwaYB67D6lCce-QpKTpHTkjsERRJ3Us/edit?gid=1454627420" target="_blank">Compte de résultats & télédéclaration fiscale</a></li>
-    </ul>
+    <a href="https://docs.google.com/spreadsheets/d/1ixmnTKR2u9XdbwaYB67D6lCce-QpKTpHTkjsERRJ3Us/edit?gid=1049653321" target="_blank">
+      <div class="card">
+        <img src="https://i.ibb.co/WvTxLtr/payslip-icon.png" alt="Fiche de paie">
+        <h2>Fiches de paie</h2>
+        <p>Édition mensuelle des bulletins</p>
+      </div>
+    </a>
+
+    <a href="https://docs.google.com/spreadsheets/d/1ixmnTKR2u9XdbwaYB67D6lCce-QpKTpHTkjsERRJ3Us/edit?gid=628608397" target="_blank">
+      <div class="card">
+        <img src="https://i.ibb.co/2hRxtbD/hr-icon.png" alt="RH">
+        <h2>Employés & Contrats</h2>
+        <p>Suivi RH, embauches, statut des contrats</p>
+      </div>
+    </a>
+
+    <a href="https://docs.google.com/spreadsheets/d/1ixmnTKR2u9XdbwaYB67D6lCce-QpKTpHTkjsERRJ3Us/edit?gid=181774848" target="_blank">
+      <div class="card">
+        <img src="https://i.ibb.co/3MN5kv8/purchase-icon.png" alt="Achats">
+        <h2>Gestion des achats</h2>
+        <p>Suivi des commandes et dépenses</p>
+      </div>
+    </a>
+
+    <a href="https://docs.google.com/spreadsheets/d/1ixmnTKR2u9XdbwaYB67D6lCce-QpKTpHTkjsERRJ3Us/edit?gid=1454627420" target="_blank">
+      <div class="card">
+        <img src="https://i.ibb.co/tQWNjLb/accounting-icon.png" alt="Comptabilité">
+        <h2>Résultats & Fiscale</h2>
+        <p>Comptabilité, déclarations, synthèses</p>
+      </div>
+    </a>
   </div>
 
 </body>
