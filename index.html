@@ -10,14 +10,13 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      height: 100vh;
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     body::before {
       content: "";
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -40,6 +39,7 @@
       animation: clignote 1.2s infinite;
       z-index: 999;
       position: relative;
+      white-space: pre-line;
     }
 
     @keyframes clignote {
@@ -71,12 +71,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: calc(100vh - 200px);
       gap: 40px;
       flex-wrap: wrap;
       position: relative;
       z-index: 1;
-      padding-top: 20px;
+      padding: 40px 20px 80px;
     }
 
     .card {
@@ -112,28 +111,26 @@
 <body>
 
   <div class="alert-banner">
-    🦖 [RAPPEL DU REX] </strong><br>
-Chers livreurs,<br>
-A la fin de votre tournée, merci de ramener le camion dans un état plus présentable qu’un steak tartare !<br>
+    🦖 [RAPPEL DU REX]  
+    Chers livreurs,  
+    À la fin de votre tournée, merci de ramener le camion dans un état plus présentable qu’un steak tartare !
 
-✅ Carburant rempli (pas juste un fond de réservoir façon mojito)<br>
-✅ Réparations faites (un rétro en moins n’est PAS une option aérodynamique)<br>
-✅ Camion vidé (non, vos frites froides et gobelets vides ne font pas partie de l’inventaire)<br>
+    ✅ Carburant rempli (pas juste un fond de réservoir façon mojito)  
+    ✅ Réparations faites (un rétro en moins n’est PAS une option aérodynamique)  
+    ✅ Camion vidé (non, vos frites froides et gobelets vides ne font pas partie de l’inventaire)
 
-Parce qu’on est peut-être des dinos, mais on roule pas à l’âge de pierre !<br>
+    Parce qu’on est peut-être des dinos, mais on roule pas à l’âge de pierre !
 
-Merci pour votre professionnalisme,<br>
-et n’oubliez pas : un camion bien entretenu, c’est un T-Rex content.
+    Merci pour votre professionnalisme,  
+    et n’oubliez pas : un camion bien entretenu, c’est un T-Rex content.
   </div>
 
   <div class="header-message">
     <h1>🐾 Bienvenue au QG du Rex’s Diner !</h1>
     <p>
       Ici, pas de blouses blanches ni de laboratoire secret : juste des steaks juteux, des milkshakes explosifs et une bonne dose de bonne humeur, servis avec le sourire… carnassier, bien sûr.  
-      Depuis les <strong>années 50</strong>, notre mission est claire : faire voyager nos clients dans le temps, entre jukebox, banquettes en cuir et entrecôtes qui claquent.
-      <br><br>
-      🦖 <strong>Rex</strong>, notre mascotte à mâchoires affûtées, veille au grain : chaque client doit se sentir <strong>unique</strong>, <strong>accueilli comme un roi</strong>… ou comme le plat du jour (selon l’humeur du chef).
-      <br><br>
+      Depuis les <strong>années 50</strong>, notre mission est claire : faire voyager nos clients dans le temps, entre jukebox, banquettes en cuir et entrecôtes qui claquent.<br><br>
+      🦖 <strong>Rex</strong>, notre mascotte à mâchoires affûtées, veille au grain : chaque client doit se sentir <strong>unique</strong>, <strong>accueilli comme un roi</strong>… ou comme le plat du jour (selon l’humeur du chef).<br><br>
       🥩​ Que tu sois en cuisine, en salle, au standard ou au poste de surveillance des frites, <strong>ton rôle est essentiel</strong>.  
       Ici, on ne fait pas que servir des plats : on offre une expérience, on crée des souvenirs… toujours avec le fun et le style rétro qui font notre légende.
     </p>
