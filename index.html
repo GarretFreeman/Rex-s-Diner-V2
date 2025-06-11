@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <title>Accueil - Rex Diner</title>
   <link rel="icon" type="image/png" href="https://i.ibb.co/pvgVjRyX/logo-rex-diner.png">
-
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
       height: 100vh;
       position: relative;
       overflow: hidden;
@@ -26,69 +26,114 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      opacity: 0.1;
+      opacity: 0.05;
       z-index: 0;
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      z-index: 1;
+      position: relative;
+    }
+
+    header img {
+      width: 50px;
+      height: 50px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .intro {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #444;
+      z-index: 1;
+      position: relative;
     }
 
     .container {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      gap: 40px;
       flex-wrap: wrap;
+      gap: 30px;
+      padding: 40px 20px;
       position: relative;
       z-index: 1;
     }
 
     .card {
-      width: 300px;
-      height: 300px;
-      background-color: rgba(255, 255, 255, 0.85);
+      width: 240px;
+      height: 260px;
+      background-color: rgba(255, 255, 255, 0.9);
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       text-align: center;
       padding: 20px;
       cursor: pointer;
       transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
     }
 
     .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
 
     .card img {
-      width: 300px;
-      height: 300px;
-      object-fit: contain;
-      margin-bottom: 20px;
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 12px;
     }
 
     .card h2 {
-      font-size: 20px;
-      color: #333;
+      font-size: 18px;
+      color: #222;
     }
   </style>
 </head>
 <body>
+
+  <header>
+    <img src="https://i.ibb.co/pvgVjRyX/logo-rex-diner.png" alt="Logo">
+    <h1>Interface Employés - Rex's Diner</h1>
+  </header>
+
+  <p class="intro">Bienvenue sur l'espace interactif de Rex's Diner. Choisissez une section ci-dessous :</p>
+
   <div class="container">
     <div class="card" onclick="window.location.href='caisse.html'">
       <img src="https://i.ibb.co/rKT93TPc/pack-kooron-cx901-23711611.jpg" alt="Caisse">
       <h2>CAISSE</h2>
     </div>
+
     <div class="card" onclick="window.location.href='resume.html'">
       <img src="https://i.ibb.co/Z6tx3GtL/statistiques.jpg" alt="Statistiques">
       <h2>STATISTIQUES</h2>
     </div>
+
     <div class="card" onclick="window.location.href='standard.html'">
       <img src="https://i.ibb.co/fzGLj7Jh/standard.jpg" alt="Standard">
       <h2>STANDARD</h2>
     </div>
+
     <div class="card" onclick="window.location.href='ressourcehumaine.html'">
-      <img src="https://i.ibb.co/twLKT3HS/Ressources-Humaines.jpg" alt="Ressources Humaines">
+      <img src="https://i.ibb.co/twLKT3HS/Ressources-Humaines.jpg" alt="RH">
       <h2>RESSOURCES HUMAINES</h2>
     </div>
+
     <div class="card" onclick="accesDirection()">
       <img src="https://i.ibb.co/CpPP1Qjp/dirigeant.jpg" alt="Direction">
       <h2>DIRECTION</h2>
@@ -105,5 +150,6 @@
       }
     }
   </script>
+
 </body>
 </html>
