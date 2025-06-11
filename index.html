@@ -89,6 +89,21 @@
       <img src="https://i.ibb.co/twLKT3HS/Ressources-Humaines.jpg" alt="Ressources Humaines">
       <h2>RESSOURCES HUMAINES</h2>
     </div>
+    <div class="card" onclick="accesDirection()">
+      <img src="https://i.ibb.co/NL1fKsR/direction.jpg" alt="Direction">
+      <h2>DIRECTION</h2>
+    </div>
   </div>
+
+  <script>
+    function accesDirection() {
+      const password = prompt("Mot de passe requis pour accéder à la direction :");
+      if (password === "rex2025") {
+        window.location.href = "direction.html";
+      } else if (password !== null) {
+        alert("Mot de passe incorrect.");
+      }
+    }
+  </script>
 </body>
 </html>
