@@ -172,12 +172,27 @@
       letter-spacing: 1px;
     }
 
+    #popup-observation {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
     #popup-observation .popup-box {
       background-color: yellow !important;
       color: black;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      text-align: center;
     }
-
-
 
     #popup-observation button {
       margin-top: 10px;
@@ -193,7 +208,6 @@
       background-color: #111;
     }
 
-    /* Mode sombre */
     body.dark-mode {
       background-color: #121212;
       color: #f0f0f0;
@@ -240,16 +254,6 @@
 
     body.dark-mode .remise-btns button:last-child:hover {
       background-color: #b71c1c;
-    }
-
-    body.dark-mode .popup-box {
-      background-color: #2c2c2c;
-      color: white;
-    }
-
-    /* ✅ Forcer la couleur du message en mode sombre */
-    body.dark-mode #popup-message {
-      color: white !important;
     }
   </style>
 </head>
@@ -364,7 +368,6 @@
     function afficherPopup(message) {
       const el = document.getElementById("popup-message");
       el.textContent = message;
-      el.style.color = 'white'; // ✅ Forcer la couleur
       document.getElementById("popup-observation").style.display = "flex";
     }
 
