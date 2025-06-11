@@ -30,6 +30,23 @@
       z-index: 0;
     }
 
+    .alert-banner {
+      background-color: #ffeb3b;
+      color: #000;
+      text-align: center;
+      padding: 10px 20px;
+      font-weight: bold;
+      font-size: 16px;
+      animation: clignote 1.2s infinite;
+      z-index: 999;
+      position: relative;
+    }
+
+    @keyframes clignote {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
     .header-message {
       background-color: rgba(255, 255, 255, 0.9);
       color: #333;
@@ -93,6 +110,10 @@
   </style>
 </head>
 <body>
+
+  <div class="alert-banner">
+    🛻 RAPPEL DU REX : Le camion doit être vidé, le plein fait et les réparations effectuées. Non, les frites froides ne comptent pas comme chargement !
+  </div>
 
   <div class="header-message">
     <h1>🐾 Bienvenue au QG du Rex’s Diner !</h1>
