@@ -30,15 +30,36 @@
       z-index: 0;
     }
 
+    .header-message {
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #333;
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 16px;
+      line-height: 1.6;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-bottom: 3px solid #eee;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header-message h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #b22222;
+      font-weight: bold;
+    }
+
     .container {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      height: calc(100vh - 200px);
       gap: 40px;
       flex-wrap: wrap;
       position: relative;
       z-index: 1;
+      padding-top: 20px;
     }
 
     .card {
@@ -72,6 +93,20 @@
   </style>
 </head>
 <body>
+
+  <div class="header-message">
+    <h1>🐾 Bienvenue au QG du Rex’s Diner !</h1>
+    <p>
+      Ici, pas de blouses blanches ni de laboratoire secret : juste des steaks juteux, des milkshakes explosifs et une bonne dose de bonne humeur, servis avec le sourire… carnassier, bien sûr.  
+      Depuis les <strong>années 50</strong>, notre mission est claire : faire voyager nos clients dans le temps, entre jukebox, banquettes en cuir et entrecôtes qui claquent.
+      <br><br>
+      🦖 <strong>Rex</strong>, notre mascotte à mâchoires affûtées, veille au grain : chaque client doit se sentir <strong>unique</strong>, <strong>accueilli comme un roi</strong>… ou comme le plat du jour (selon l’humeur du chef).
+      <br><br>
+      🥩​ Que tu sois en cuisine, en salle, au standard ou au poste de surveillance des frites, <strong>ton rôle est essentiel</strong>.  
+      Ici, on ne fait pas que servir des plats : on offre une expérience, on crée des souvenirs… toujours avec le fun et le style rétro qui font notre légende.
+    </p>
+  </div>
+
   <div class="container">
     <div class="card" onclick="window.location.href='caisse.html'">
       <img src="https://i.ibb.co/Ldr7C9bQ/Caisse-V2.png" alt="Caisse">
