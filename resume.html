@@ -90,9 +90,10 @@
 <script>
   function formatDollar(value) {
     const number = parseFloat(value);
-    if (isNaN(number)) return "-";
-    return `${Math.round(number)} $`;
-  }
+  if (isNaN(number)) return "-";
+  return `${Math.round(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} $`;
+}
+
 
   function formatDate(value) {
     const date = new Date(value);
