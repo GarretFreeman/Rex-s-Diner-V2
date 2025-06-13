@@ -14,17 +14,16 @@
     }
 
     .retour-btn {
-  display: inline-block;
-  margin-bottom: 30px;
-  padding: 10px 16px;
-  background-color: #555;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
+      display: inline-block;
+      margin-bottom: 30px;
+      padding: 10px 16px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
     }
-
 
     h1 {
       text-align: center;
@@ -65,105 +64,158 @@
 
   <h1>RÉSUMÉ D'ACTIVITÉ</h1>
 
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Livraisons PNJ</th>
+        <th>Montant Livraisons</th>
+        <th>Prime Livraisons</th>
+        <th>Ventes PNJ</th>
+        <th>Montant Ventes</th>
+        <th>Prime Ventes</th>
+        <th>Facturation Client</th>
+        <th>Prime Facturation</th>
+        <th>Salaire</th>
+        <th>Dern. Activité</th>
+      </tr>
+    </thead>
+    <tbody id="stat-body">
+      <tr><td colspan="11">Chargement...</td></tr>
+    </tbody>
+  </table>
 
-<table>
-  <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Livraisons PNJ</th>
-      <th>Montant Livraisons</th>
-      <th>Prime Livraisons</th>
-      <th>Ventes PNJ</th>
-      <th>Montant Ventes</th>
-      <th>Prime Ventes</th>
-      <th>Facturation Client</th>
-      <th>Prime Facturation</th>
-      <th>Salaire</th>
-      <th>Dern. Activité</th>
-    </tr>
-  </thead>
-  <tbody id="stat-body">
-    <tr><td colspan="11">Chargement...</td></tr>
-  </tbody>
-</table>
+  <script>
+    function formatDollar(value) {
+      const number = parseFloat(value);
+      if (isNaN(number)) return "-";
+      return `${Math.round(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} $`;
+    }
 
-<script>
-  function formatDollar(value) {
-    const number = parseFloat(value);
-  if (isNaN(number)) return "-";
-  return `${Math.round(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} $`;
-}
+    function formatDate(value) {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return value;
+      return date.toLocaleString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
 
+    fetch("https://script.google.com/macros/s/AKfycbx0MPEuQmt-PS2VX0JXy04z_-xuQT-Jy6m4n1zw5iQLDcgi5pVmDPKwE75h_YJkS5s7/exec")
+      .then(res => res.json())
+      .then(data => {
+        const stats = data.stat || [];
+        const tbody = document.getElementById("stat-body");
+        tbody.innerHTML = "";
 
-  function formatDate(value) {
-    const date = new Date(value);
-    if (isNaN(date.getTime())) return value;
-    return date.toLocaleString("fr-FR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-  }
+        stats.sort((a, b) => new Date(b.derniereActivite) - new Date(a.derniereActivite));
 
-  fetch("https://script.google.com/macros/s/AKfycbx0MPEuQmt-PS2VX0JXy04z_-xuQT-Jy6m4n1zw5iQLDcgi5pVmDPKwE75h_YJkS5s7/exec")
-    .then(res => res.json())
-    .then(data => {
-      const stats = data.stat || [];
-      const tbody = document.getElementById("stat-body");
-      tbody.innerHTML = "";
+        let totalLivraisonsPNJ = 0;
+        let totalMontantLivraison = 0;
+        let totalPrimeLivraison = 0;
+        let totalVentesPNJ = 0;
+        let totalMontantVentePNJ = 0;
+        let totalPrimeVentePNJ = 0;
+        let totalFacturation = 0;
+        let totalPrimeFacturation = 0;
+        let totalSalaire = 0;
 
-      stats.sort((a, b) => new Date(b.derniereActivite) - new Date(a.derniereActivite));
+        stats.forEach(row => {
+          if (!row.nom || row.nom.trim() === "") return;
 
-      stats.forEach(row => {
-        if (!row.nom || row.nom.trim() === "") return;
+          const tr = document.createElement("tr");
 
-        const tr = document.createElement("tr");
+          function createCell(value, isMonetary = false) {
+            const td = document.createElement("td");
+            let content = value;
 
-        function createCell(value, isMonetary = false) {
-          const td = document.createElement("td");
-          let content = value;
+            if (value === "" || value == null) {
+              td.style.backgroundColor = "#f0f0f0";
+              content = "-";
+            } else if (isMonetary) {
+              content = formatDollar(value);
+            }
 
-          if (value === "" || value == null) {
-            td.style.backgroundColor = "#f0f0f0";
-            content = "-";
-          } else if (isMonetary) {
-            content = formatDollar(value);
+            td.textContent = content;
+            return td;
           }
 
+          tr.appendChild(createCell(row.nom));
+          tr.appendChild(createCell(row.livraisonsPNJ));
+          if (!isNaN(parseFloat(row.livraisonsPNJ))) totalLivraisonsPNJ += parseFloat(row.livraisonsPNJ);
+
+          tr.appendChild(createCell(row.montantLivraison, true));
+          if (!isNaN(parseFloat(row.montantLivraison))) totalMontantLivraison += parseFloat(row.montantLivraison);
+
+          tr.appendChild(createCell(row.primeLivraison, true));
+          if (!isNaN(parseFloat(row.primeLivraison))) totalPrimeLivraison += parseFloat(row.primeLivraison);
+
+          tr.appendChild(createCell(row.ventesPNJ));
+          if (!isNaN(parseFloat(row.ventesPNJ))) totalVentesPNJ += parseFloat(row.ventesPNJ);
+
+          tr.appendChild(createCell(row.montantVentePNJ, true));
+          if (!isNaN(parseFloat(row.montantVentePNJ))) totalMontantVentePNJ += parseFloat(row.montantVentePNJ);
+
+          tr.appendChild(createCell(row.primeVentePNJ, true));
+          if (!isNaN(parseFloat(row.primeVentePNJ))) totalPrimeVentePNJ += parseFloat(row.primeVentePNJ);
+
+          tr.appendChild(createCell(row.facturation, true));
+          if (!isNaN(parseFloat(row.facturation))) totalFacturation += parseFloat(row.facturation);
+
+          tr.appendChild(createCell(row.primeFacturation, true));
+          if (!isNaN(parseFloat(row.primeFacturation))) totalPrimeFacturation += parseFloat(row.primeFacturation);
+
+          tr.appendChild(createCell(row.salaire, true));
+          if (!isNaN(parseFloat(row.salaire))) totalSalaire += parseFloat(row.salaire);
+
+          const tdDate = document.createElement("td");
+          if (row.derniereActivite === "" || row.derniereActivite == null) {
+            tdDate.textContent = "-";
+            tdDate.style.backgroundColor = "#f0f0f0";
+          } else {
+            tdDate.textContent = formatDate(row.derniereActivite);
+          }
+          tr.appendChild(tdDate);
+
+          tbody.appendChild(tr);
+        });
+
+        const totalRow = document.createElement("tr");
+
+        function createTotalCell(content, bold = false) {
+          const td = document.createElement("td");
           td.textContent = content;
+          td.style.backgroundColor = "#fce4e4";
+          td.style.color = "red";
+          td.style.borderTop = "3px solid red";
+          if (bold) {
+            td.style.fontWeight = "bold";
+            td.textContent = `📊 ${content}`;
+          }
           return td;
         }
 
-        tr.appendChild(createCell(row.nom));
-        tr.appendChild(createCell(row.livraisonsPNJ));
-        tr.appendChild(createCell(row.montantLivraison, true));
-        tr.appendChild(createCell(row.primeLivraison, true));
-        tr.appendChild(createCell(row.ventesPNJ));
-        tr.appendChild(createCell(row.montantVentePNJ, true));
-        tr.appendChild(createCell(row.primeVentePNJ, true));
-        tr.appendChild(createCell(row.facturation, true));
-        tr.appendChild(createCell(row.primeFacturation, true));
-        tr.appendChild(createCell(row.salaire, true));
+        totalRow.appendChild(createTotalCell("TOTAL", true));
+        totalRow.appendChild(createTotalCell(totalLivraisonsPNJ));
+        totalRow.appendChild(createTotalCell(formatDollar(totalMontantLivraison)));
+        totalRow.appendChild(createTotalCell(formatDollar(totalPrimeLivraison)));
+        totalRow.appendChild(createTotalCell(totalVentesPNJ));
+        totalRow.appendChild(createTotalCell(formatDollar(totalMontantVentePNJ)));
+        totalRow.appendChild(createTotalCell(formatDollar(totalPrimeVentePNJ)));
+        totalRow.appendChild(createTotalCell(formatDollar(totalFacturation)));
+        totalRow.appendChild(createTotalCell(formatDollar(totalPrimeFacturation)));
+        totalRow.appendChild(createTotalCell(formatDollar(totalSalaire)));
+        totalRow.appendChild(createTotalCell(""));
 
-        const tdDate = document.createElement("td");
-        if (row.derniereActivite === "" || row.derniereActivite == null) {
-          tdDate.textContent = "-";
-          tdDate.style.backgroundColor = "#f0f0f0";
-        } else {
-          tdDate.textContent = formatDate(row.derniereActivite);
-        }
-        tr.appendChild(tdDate);
-
-        tbody.appendChild(tr);
+        tbody.appendChild(totalRow);
+      })
+      .catch(err => {
+        console.error("Erreur API :", err);
+        document.getElementById("stat-body").innerHTML = `<tr><td colspan="11" style="color:red;">Erreur de chargement des données</td></tr>`;
       });
-    })
-    .catch(err => {
-      console.error("Erreur API :", err);
-      document.getElementById("stat-body").innerHTML = `<tr><td colspan="11" style="color:red;">Erreur de chargement des données</td></tr>`;
-    });
-</script>
-
+  </script>
 </body>
 </html>
